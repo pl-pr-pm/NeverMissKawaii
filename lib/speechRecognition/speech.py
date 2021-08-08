@@ -3,7 +3,8 @@ sys.path.append('../../')
 
 import speech_recognition as sr
 from lib.util import _logger_setup
-from lib.driver import Driver
+from lib.function.driver import Driver
+from lib.function.screenShot.screencapture import ScreenShot
 import config
 import logging
 
@@ -13,14 +14,15 @@ class Error(Exception):
 class speechRecognition():
 
     def __init__(self, func):
-        self.function = 'ScreenShot'
+        self.function = ScreenShot
         #self.function = config.FUNC_NAME
         self.logger = _logger_setup(logging.DEBUG)
         #self.mic_name = config.MIC_NAME
         self.mic_name = 'Built-in Microphone'
         self.recognizer = sr.Recognizer()
+        self._tune_recognizer_parameter()
         self.driver = Driver()
-        self.mic = sr.Microphone(device_index=(self._ret_mic_index()))
+        self.mic = sr.Microphone(device_index=(self._ret_mic_index()), sample_rate=10000, chunk_size=512)
 
     def run(self):
         # obtain audio from the microphone
@@ -59,3 +61,11 @@ class speechRecognition():
            return sr.Microphone.list_microphone_names().index(self.mic_name)
         except Exception as e:
            raise Error('configにて選択したマイクは存在しません。 Key:MIC_NAME')
+    
+    """ recognizerのパラメタをチューニングする"""
+    def _tune_recognizer_parameter(self):
+        # サウンドのエネルギーレベルのしきい値を表します。このしきい値を下回る値は無音と見なされ、このしきい値を超える値は音声と見なされます。
+        # デフォルトは300だが、ノイズと間違えないように大きい声で検出するように値を引き上げる
+        self.recognizer.energy_threshold = 500
+        # フレーズの終わりとして登録される無音の最小の長さ（秒単位）
+        self.pause_threshold = 0.001
