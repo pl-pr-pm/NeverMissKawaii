@@ -8,5 +8,5 @@ def _logger_setup(level):
 
 def _get_now_str():
     now = datetime.datetime.now()
-    now_str = now.strftime('%Y%m%d')
+    now_str = now.strftime('%Y%m%d%H%M%S')
     return now_str
