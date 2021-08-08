@@ -23,17 +23,17 @@ NMKは、リアルタイムで早急なスクリーンショット実行が必�
 """
 
 class ScreenShot():
-
-    def __init__(self):
-        self.logger = _logger_setup(logging.DEBUG)
-        self.output_path = config.OUTPUT_PATH + util._get_now_str() + '.jpg'
+    
+    logger = _logger_setup(logging.DEBUG)
+    output_path = config.OUTPUT_PATH + _get_now_str() + '.jpg'
     
     """スクリーンショット実行"""
     @classmethod
     def do(cls):
         # -x → サウンドなし
         try:
-           subprocess.call(["screencapture", "-x", cls.output_path])
+           #subprocess.call(["screencapture", "-x", cls.output_path])
+           subprocess.call(["screencapture", cls.output_path])
            cls.logger.debug('スクリーンショット取得完了。保存先：' + cls.output_path)
         
         except Exception as e:
@@ -42,5 +42,5 @@ class ScreenShot():
            cls._delete()
     
     """作成ファイルを削除"""
-    def _delete(self):
-        os.unlink(self.output_path)
+    def _delete():
+        os.unlink(cls.output_path)

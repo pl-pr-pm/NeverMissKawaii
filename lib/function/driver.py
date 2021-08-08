@@ -1,4 +1,6 @@
-from screenShot.screenshot import ScreenShot
+import sys
+sys.path.append('../../')
+print(sys.path)
 
 """
 ScreenShotクラスと、各FunctionクラスのIF（インターフェース）クラス
@@ -10,5 +12,5 @@ class Driver():
     def __init__(self):
         pass
 
-    def invoke(self, func_name):
-        func_name.do()
+    def invoke(self, func):
+        func.do()
