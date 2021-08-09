@@ -2,7 +2,7 @@ import sys
 sys.path.append('../../')
 
 import speech_recognition as sr
-from lib.util import _logger_setup
+from lib.util import _logger_setup, _match_word
 from lib.function.driver import Driver
 from lib.function.screenShot.screencapture import ScreenShot
 import config
@@ -14,11 +14,9 @@ class Error(Exception):
 class speechRecognition():
 
     def __init__(self, func):
-        self.function = ScreenShot
-        #self.function = config.FUNC_NAME
+        self.function = func
         self.logger = _logger_setup(logging.DEBUG)
-        #self.mic_name = config.MIC_NAME
-        self.mic_name = 'Built-in Microphone'
+        self.mic_name = config.MIC_NAME
         self.recognizer = sr.Recognizer()
         self._tune_recognizer_parameter()
         self.driver = Driver()
@@ -31,16 +29,17 @@ class speechRecognition():
            with self.mic as source:
               self.recognizer.adjust_for_ambient_noise(source, duration=0.5) # ノイズ軽減 @https://realpython.com/python-speech-recognition/#the-effect-of-noise-on-speech-recognition
               audio = self.recognizer.listen(source)
+           
            try:
               # 'stop'を認識したら終了する
               word = self.recognizer.recognize_sphinx(audio)
-              if word.lower() in ['stop', 'stop it']:
+              if _match_word(patterns=[r'stop'], word=word):
                   self.logger.debug("Speech Recognition is over.")
                   break
-              
+
               # ./lib/python3.6/site-packages/speech_recognition/pocketsphinx-data/en-US/pronounciation-dictionary.dict
               # 上記ファイルに 'kawaii' を追加したが認識してくれない。そのため、かわいい を発した際に Sphinx が認識したワードを用いる
-              elif word.lower() in ['kawaii', 'corey', 'hawaii']:
+              elif _match_word(patterns=[r'kawai', r'corey', r'hawaii'], word=word):
                   self.logger.debug("The function activate...")
                   # configで設定した実行機能
                   self.driver.invoke(self.function)
