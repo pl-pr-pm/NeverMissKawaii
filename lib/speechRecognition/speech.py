@@ -11,6 +11,10 @@ import logging
 class Error(Exception):
     pass
 
+"""
+speech_recognition を利用して、音声認識機能を提供。
+音声によってスクリーンショットなどの機能の実行が可能。
+"""
 class speechRecognition():
 
     def __init__(self, func):
@@ -20,7 +24,7 @@ class speechRecognition():
         self.recognizer = sr.Recognizer()
         self._tune_recognizer_parameter()
         self.driver = Driver()
-        self.mic = sr.Microphone(device_index=(self._ret_mic_index()), sample_rate=10000, chunk_size=512)
+        self.mic = sr.Microphone(device_index=(self._ret_mic_index()), sample_rate=15000, chunk_size=256)
 
     def run(self):
         # obtain audio from the microphone
@@ -31,18 +35,19 @@ class speechRecognition():
               audio = self.recognizer.listen(source)
            
            try:
-              # 'stop'を認識したら終了する
               word = self.recognizer.recognize_sphinx(audio)
-              if _match_word(patterns=[r'stop'], word=word):
-                  self.logger.debug("Speech Recognition is over.")
-                  break
 
               # ./lib/python3.6/site-packages/speech_recognition/pocketsphinx-data/en-US/pronounciation-dictionary.dict
               # 上記ファイルに 'kawaii' を追加したが認識してくれない。そのため、かわいい を発した際に Sphinx が認識したワードを用いる
-              elif _match_word(patterns=[r'kawai', r'corey', r'hawaii'], word=word):
+              if _match_word(patterns=[r'wai', r'kawai', r'corey', r'hawaii'], word=word):
                   self.logger.debug("The function activate...")
                   # configで設定した実行機能
                   self.driver.invoke(self.function)
+               
+               # 'stop'を認識したら終了する
+              elif _match_word(patterns=[r'stop'], word=word):
+                  self.logger.debug("Speech Recognition is over.")
+                  break
               
               else:
                   self.logger.debug("Sphinx thinks you said " + word)
@@ -65,6 +70,6 @@ class speechRecognition():
     def _tune_recognizer_parameter(self):
         # サウンドのエネルギーレベルのしきい値を表します。このしきい値を下回る値は無音と見なされ、このしきい値を超える値は音声と見なされます。
         # デフォルトは300だが、ノイズと間違えないように大きい声で検出するように値を引き上げる
-        self.recognizer.energy_threshold = 500
+        self.recognizer.energy_threshold = 1000
         # フレーズの終わりとして登録される無音の最小の長さ（秒単位）
         self.pause_threshold = 0.001
