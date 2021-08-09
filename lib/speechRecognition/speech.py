@@ -23,42 +23,37 @@ class speechRecognition():
         self._tune_recognizer_parameter()
         self.driver = Driver()
         self.mic = sr.Microphone(device_index=(self._ret_mic_index()), sample_rate=10000, chunk_size=512)
-        self.stop_listening = None
-   
-    def callback(self, recognizer, audio):
+
+    def run(self):
+        # obtain audio from the microphone
+        while True:
+           self.logger.info("Start Speech Recognition")
+           with self.mic as source:
+              self.recognizer.adjust_for_ambient_noise(source, duration=0.5) # ノイズ軽減 @https://realpython.com/python-speech-recognition/#the-effect-of-noise-on-speech-recognition
+              audio = self.recognizer.listen(source)
            try:
               # 'stop'を認識したら終了する
-              word = recognizer.recognize_sphinx(audio)
+              word = self.recognizer.recognize_sphinx(audio)
               if word.lower() in ['stop', 'stop it']:
                   self.logger.debug("Speech Recognition is over.")
-                  self.stop_listening(wait_for_stop=False)
+                  break
+              
               # ./lib/python3.6/site-packages/speech_recognition/pocketsphinx-data/en-US/pronounciation-dictionary.dict
               # 上記ファイルに 'kawaii' を追加したが認識してくれない。そのため、かわいい を発した際に Sphinx が認識したワードを用いる
               elif word.lower() in ['kawaii', 'corey', 'hawaii']:
                   self.logger.debug("The function activate...")
                   # configで設定した実行機能
                   self.driver.invoke(self.function)
+              
               else:
                   self.logger.debug("Sphinx thinks you said " + word)
                   self.logger.debug("Still continue")
+           
            except sr.UnknownValueError:
               self.logger.error("Sphinx could not understand audio")
            except sr.RequestError as e:
               self.logger.error("Sphinx error; {0}".format(e))
 
-    def run(self):
-        self.logger.info("Start Speech Recognition")
-        try:
-           with self.mic as source:
-                self.logger.info("with")
-                self.recognizer.adjust_for_ambient_noise(source, duration=0.5) # ノイズ軽減 @https://realpython.com/python-speech-recognition/#the-effect-of-noise-on-speech-recognition
-                self.logger.info("adjust")
-                audio = self.recognizer.listen(source)
-                self.logger.info("listen")
-           self.stop_listening = self.recognizer.listen_in_background(self.mic, self.callback)
-        except Exception as e:
-           self.logger.error(e)
-        
     """ユーザが利用するマイクのインデックスを返却する"""
     def _ret_mic_index(self):
         print(sr.Microphone.list_microphone_names())
