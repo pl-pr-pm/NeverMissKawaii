@@ -12,5 +12,10 @@ class Driver():
     def __init__(self):
         pass
 
+"""
+クロージャを利用（使ってみたかっただけ）
+"""
     def invoke(self, func):
-        func.do()
+        def inner():
+            func.do()
+        return inner
