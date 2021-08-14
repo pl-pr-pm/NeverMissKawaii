@@ -18,12 +18,12 @@ speech_recognition を利用して、音声認識機能を提供。
 class speechRecognition():
 
     def __init__(self, func):
-        self.function = func
         self.logger = _logger_setup(logging.DEBUG)
         self.mic_name = config.MIC_NAME
         self.recognizer = sr.Recognizer()
         self._tune_recognizer_parameter()
         self.driver = Driver()
+        self.func = Driver().invoke(func)
         self.mic = sr.Microphone(device_index=(self._ret_mic_index()), sample_rate=15000, chunk_size=256)
 
     def run(self):
@@ -42,7 +42,7 @@ class speechRecognition():
               if _match_word(patterns=[r'wai', r'kawai', r'corey', r'hawaii'], word=word):
                   self.logger.debug("The function activate...")
                   # configで設定した実行機能
-                  self.driver.invoke(self.function)
+                  self.func()
                
                # 'stop'を認識したら終了する
               elif _match_word(patterns=[r'stop'], word=word):
