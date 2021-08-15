@@ -1,6 +1,8 @@
 import logging
 import datetime
 import re
+from functools import wraps
+import time
 
 def _logger_setup(level):
     logger = logging.getLogger(__name__)
@@ -21,3 +23,14 @@ def _match_word(patterns, word):
         if result:
             return True
     return False
+
+'''関数の実行時間を計測'''
+def _time_func(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        start = time.time()
+        result = func(*args, **kwargs)
+        elapsed = time.time() - start
+        print(f'{func.__name__} took {elapsed} s')
+        return result
+    return wrapper
