@@ -39,3 +39,4 @@ MIC_NAMEは、NMKを実行すると、標準出力でターミナルに表示さ
 *bluetoothでのマイクの場合、有線のマイクより遅延が発生します*
 
 ### デモ
+![NMK_resize](https://user-images.githubusercontent.com/59119963/159640702-0b08c68d-a61e-4f4a-9e44-9489636249cc.gif)
