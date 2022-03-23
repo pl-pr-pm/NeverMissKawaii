@@ -37,7 +37,7 @@ class speechRecognition():
            try:
               word = self.recognizer.recognize_sphinx(audio)
 
-              # ./lib/python3.6/site-packages/speech_recognition/pocketsphinx-data/en-US/pronounciation-dictionary.dict
+              # pronounciation-dictionary.dict
               # 上記ファイルに 'kawaii' を追加したが認識してくれない。そのため、かわいい を発した際に Sphinx が認識したワードを用いる
               if _match_word(patterns=[r'wai', r'kawai', r'corey', r'hawaii'], word=word):
                   self.logger.debug("The function activate...")
