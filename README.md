@@ -37,11 +37,9 @@ pronounciation-dictionary.dict
 
 ### マイク変更
 
-conig.py にて MIC_NAME= の値を変更します
-
-MIC_NAME は、NMK を実行すると、標準出力でターミナルに表示されます
-
-_bluetooth でのマイクの場合、有線のマイクより遅延が発生します_
+conig.py にて MIC*NAME= の値を変更します  
+MIC_NAME は、NMK を実行すると、標準出力でターミナルに表示されます  
+\_bluetooth でのマイクの場合、有線のマイクより遅延が発生します*
 
 ### デモ
 
