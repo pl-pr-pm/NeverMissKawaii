@@ -44,3 +44,12 @@ MIC_NAME は、NMK を実行すると、標準出力でターミナルに表示�
 ### デモ
 
 ![NMK_resize](https://user-images.githubusercontent.com/59119963/159640702-0b08c68d-a61e-4f4a-9e44-9489636249cc.gif)
+
+### 仕組み
+
+1. SpeechRecognition(https://pypi.org/project/SpeechRecognition/) を利用し、音声識別を実施  
+内部の音声エンジンはオフラインで実施したいためCMU Sphinx(https://cmusphinx.github.io/wiki/)を利用
+
+2. SpeechRecognitionで識別した音声に応じてアクションを実施  
+「かわいい」であればスクリーンショットを実施
+「stop」であればアプリケーション終了とする
